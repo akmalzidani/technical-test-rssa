@@ -82,7 +82,7 @@ const { history, removeHistory } = usePdfHistory();
                 {{ formatDateTime(date) }}
               </TableCell>
               <TableCell class="flex items-center justify-end gap-2">
-                <Button variant="link">Lihat</Button>
+                <Button variant="success">📄Unduh</Button>
                 <Button variant="destructive" @click="removeHistory(id)"
                   >Hapus</Button
                 >
