@@ -41,7 +41,7 @@ const formState = reactive({
 </script>
 
 <template>
-  <section id="form-section">
+  <section id="form-section" class="scroll-mt-40">
     <Card class="w-full">
       <CardHeader>
         <CardTitle>Generate PDF Form</CardTitle>

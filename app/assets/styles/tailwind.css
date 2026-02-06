@@ -120,9 +120,4 @@
   body {
     @apply bg-background text-foreground;
   }
-
-  #form-section,
-  #table-section {
-    scroll-margin-top: 12rem;
-  }
 }

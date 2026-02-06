@@ -78,7 +78,7 @@ const invoices = [
 </script>
 
 <template>
-  <section id="table-section">
+  <section id="table-section" class="scroll-mt-30 lg:scroll-mt-36">
     <Card class="w-full">
       <CardHeader>
         <CardTitle>History Generate</CardTitle>
