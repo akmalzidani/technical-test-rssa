@@ -2,8 +2,6 @@
 
 Aplikasi web untuk membuat dan mengelola laporan PDF dengan mudah. Dibangun menggunakan **Nuxt 4**, **Shadcn Vue**, dan **Tailwind CSS**.
 
-![Dashboard Preview](/public/icon.png)
-
 ## 🚀 Fitur Utama
 
 - **Dashboard Layout Responsif**: Tampilan grid yang rapi dan adaptif untuk Desktop, Tablet, dan Mobile.
