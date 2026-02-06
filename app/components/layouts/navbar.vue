@@ -16,7 +16,7 @@ const closeMobileMenu = () => {
     :class="{ 'overflow-hidden': !isMobileMenuOpen }"
   >
     <div
-      class="pointer-events-none absolute inset-0 bg-[url(/navbar-bg.png)] opacity-30 blur-sm"
+      class="pointer-events-none absolute inset-0 bg-[url(/navbar-bg.png)] opacity-10 blur-sm"
     ></div>
     <nav
       class="relative container mx-auto flex w-full items-center justify-between py-3"
@@ -39,14 +39,14 @@ const closeMobileMenu = () => {
         <li>
           <NuxtLink
             to="#form-section"
-            class="underline-offset-4 hover:underline"
+            class="underline-offset-4 hover:underline transition-colors duration-300"
             >Generate PDF</NuxtLink
           >
         </li>
         <li>
           <NuxtLink
             to="#table-section"
-            class="underline-offset-4 hover:underline"
+            class="underline-offset-4 hover:underline transition-colors duration-300"
             >History Generate</NuxtLink
           >
         </li>
