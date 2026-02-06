@@ -2,8 +2,11 @@
 
 <template>
   <header
-    class="sticky top-8 z-50 container mx-auto rounded-xl border border-gray-200 bg-white px-4 shadow-sm"
+    class="sticky top-8 z-50 container mx-auto overflow-hidden rounded-xl border border-gray-200 bg-white px-4 shadow-sm"
   >
+    <div
+      class="pointer-events-none absolute inset-0 bg-[url(/navbar-bg.png)] opacity-30 blur-sm"
+    ></div>
     <nav
       class="container mx-auto flex w-full items-center justify-between py-3"
     >
@@ -15,7 +18,9 @@
             class="h-full w-full object-contain object-center"
           />
         </div>
-        <h1 class="text-base font-bold lg:text-2xl">PDF Report Generator</h1>
+        <h1 class="text-base font-bold text-red-600 lg:text-2xl">
+          PDF Report Generator
+        </h1>
       </div>
       <ul class="flex space-x-4 text-sm lg:text-base">
         <li>
