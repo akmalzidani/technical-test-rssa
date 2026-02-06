@@ -32,10 +32,11 @@ const PAGE_SIZES = [
 ];
 
 const formState = reactive({
-  selectedPageSize: "a4",
-  judulLaporan: "",
-  deskripsi: "",
-  nominal: "",
+  pageSize: "a4",
+  title: "",
+  description: "",
+  amount: "",
+  date: Date.now(),
 });
 </script>
 
@@ -54,8 +55,8 @@ const formState = reactive({
             <div
               class="col-span-5 flex flex-col space-y-1.5 md:col-span-3 lg:col-span-2"
             >
-              <Label for="ukuran_halaman">Ukuran halaman</Label>
-              <Select v-model="formState.selectedPageSize">
+              <Label for="pageSize">Ukuran halaman</Label>
+              <Select v-model="formState.pageSize">
                 <SelectTrigger class="relative top-0.5 w-full">
                   <SelectValue placeholder="Pilih ukuran halaman" />
                 </SelectTrigger>
@@ -74,40 +75,38 @@ const formState = reactive({
             <div
               class="col-span-7 flex flex-col space-y-1.5 md:col-span-9 lg:col-span-10"
             >
-              <Label for="judul_laporan">Judul Laporan</Label>
+              <Label for="title">Judul Laporan</Label>
               <Input
-                id="judul_laporan"
+                id="title"
                 type="text"
                 placeholder="Masukkan judul laporan..."
-                v-model="formState.judulLaporan"
+                v-model="formState.title"
               />
             </div>
             <div class="col-span-full flex flex-col space-y-1.5">
-              <Label for="deskripsi">Deskripsi / Isi Laporan</Label>
+              <Label for="description">Deskripsi / Isi Laporan</Label>
               <Textarea
-                id="deskripsi"
+                id="description"
                 placeholder="Masukkan isi laporan..."
-                v-model="formState.deskripsi"
+                v-model="formState.description"
               />
             </div>
             <div
               class="col-span-7 flex flex-col space-y-1.5 md:col-span-5 lg:col-span-3"
             >
-              <Label for="nominal">Nominal (Rp)</Label>
+              <Label for="amount">Nominal (Rp)</Label>
               <InputGroup>
                 <InputGroupAddon>
                   <InputGroupText>Rp</InputGroupText>
                 </InputGroupAddon>
-                <InputGroupInput placeholder="0" v-model="formState.nominal" />
+                <InputGroupInput placeholder="0" v-model="formState.amount" />
               </InputGroup>
             </div>
           </div>
         </form>
       </CardContent>
       <CardFooter class="flex justify-end">
-        <Button class="cursor-pointer px-8 py-6" variant="destructive"
-          >Generate PDF 📄</Button
-        >
+        <Button class="px-8 py-6" variant="destructive">Generate PDF 📄</Button>
       </CardFooter>
     </Card>
   </section>

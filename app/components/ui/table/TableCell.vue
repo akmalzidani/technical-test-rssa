@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
-  isEven?: boolean;
 }>();
 </script>
 
@@ -15,7 +14,6 @@ const props = defineProps<{
       cn(
         'p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-0.5',
         props.class,
-        props.isEven ? 'bg-gray-100' : '',
       )
     "
   >

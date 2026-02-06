@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -15,50 +14,65 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toast } from "vue-sonner";
+import { formatDate, formatRupiah } from "~/lib/utils";
 
 const invoices = [
   {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
+    pageSize: "a4",
+    title: "Laporan Penjualan Q1 2026",
+    description:
+      "Rekapitulasi penjualan produk untuk kuartal pertama tahun 2026",
+    amount: "15750000",
+    date: new Date("2026-01-15").getTime(),
   },
   {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
+    pageSize: "a4",
+    title: "Laporan Keuangan Bulanan",
+    description: "Laporan keuangan perusahaan bulan Januari 2026",
+    amount: "42500000",
+    date: new Date("2026-01-20").getTime(),
   },
   {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
+    pageSize: "letter",
+    title: "Invoice Klien ABC Corp",
+    description: "Pembayaran jasa konsultasi dan pengembangan sistem",
+    amount: "28900000",
+    date: new Date("2026-01-25").getTime(),
   },
   {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
+    pageSize: "a5",
+    title: "Laporan Inventory",
+    description: "Stok barang dan rekapitulasi pembelian bahan baku",
+    amount: "8750000",
+    date: new Date("2026-02-01").getTime(),
   },
   {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
+    pageSize: "a4",
+    title: "Laporan Pengeluaran Operasional",
+    description: "Rincian biaya operasional kantor dan utilities",
+    amount: "12300000",
+    date: new Date("2026-02-03").getTime(),
   },
   {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
+    pageSize: "a4",
+    title: "Tagihan Vendor XYZ",
+    description: "Pembayaran supplier untuk material proyek",
+    amount: "35600000",
+    date: new Date("2026-02-04").getTime(),
   },
   {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
+    pageSize: "letter",
+    title: "Laporan Pajak",
+    description: "Laporan pajak bulanan dan PPh 21 karyawan",
+    amount: "6750000",
+    date: new Date("2026-02-05").getTime(),
+  },
+  {
+    pageSize: "a4",
+    title: "Reimbursement Tim Sales",
+    description: "Klaim perjalanan dinas dan entertainment klien",
+    amount: "4850000",
+    date: new Date("2026-02-06").getTime(),
   },
 ];
 </script>
@@ -81,34 +95,27 @@ const invoices = [
               <TableHead>Ukuran Halaman</TableHead>
               <TableHead> Nominal </TableHead>
               <TableHead> Tanggal </TableHead>
-              <TableHead> Aksi </TableHead>
+              <TableHead class="w-24 text-center"> Aksi </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow
-              v-for="(invoice, index) in invoices"
-              :key="invoice.invoice"
+              v-for="({ title, pageSize, amount, date }, index) in invoices"
+              :key="index"
+              :index="index"
             >
-              <TableCell
-                class="border-r border-r-gray-300 font-medium"
-                :isEven="index % 2 === 0"
-              >
+              <TableCell class="border-r border-r-gray-300 font-medium">
                 {{ index + 1 }}
               </TableCell>
-              <TableCell :isEven="index % 2 === 0">{{
-                invoice.paymentStatus
-              }}</TableCell>
-              <TableCell :isEven="index % 2 === 0">{{
-                invoice.paymentMethod
-              }}</TableCell>
-              <TableCell :isEven="index % 2 === 0">
-                {{ invoice.totalAmount }}
+              <TableCell>{{ title }}</TableCell>
+              <TableCell class="uppercase">{{ pageSize }}</TableCell>
+              <TableCell> Rp {{ formatRupiah(amount) }} </TableCell>
+              <TableCell>
+                {{ formatDate(date) }}
               </TableCell>
-              <TableCell :isEven="index % 2 === 0">
-                {{ invoice.totalAmount }}
-              </TableCell>
-              <TableCell :isEven="index % 2 === 0">
-                {{ invoice.totalAmount }}
+              <TableCell class="flex items-center justify-end gap-2">
+                <Button variant="link">Lihat</Button>
+                <Button variant="destructive">Download </Button>
               </TableCell>
             </TableRow>
           </TableBody>
