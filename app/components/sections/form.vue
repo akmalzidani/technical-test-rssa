@@ -29,13 +29,20 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import CurrencyInput from "@/components/ui/currency-input/CurrencyInput.vue";
-import { pdfFormSchema } from "@/lib/schemas/pdf-form";
+import { pdfFormSchema, type PdfFormValues } from "@/lib/schemas/pdf-form";
+import { usePdfHistory } from "@/composables/usePdfHistory";
+
+const emit = defineEmits<{
+  (e: "change", values: Partial<PdfFormValues>): void;
+}>();
 
 const PAGE_SIZES = [
   { label: "A4", value: "a4" },
   { label: "A5", value: "a5" },
   { label: "Letter", value: "letter" },
 ] as const;
+
+const { addHistory } = usePdfHistory();
 
 const { handleSubmit, resetForm, isSubmitting, values } = useForm({
   validationSchema: pdfFormSchema,
@@ -47,10 +54,17 @@ const { handleSubmit, resetForm, isSubmitting, values } = useForm({
   },
 });
 
+watch(values, (newValues) => {
+  emit("change", newValues);
+}, { deep: true });
+
 const onSubmit = handleSubmit(async (formValues) => {
   try {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     console.log("Form submitted:", formValues);
+    
+    addHistory(formValues);
+    
     toast.success("PDF berhasil di-generate");
     resetForm();
   } catch {

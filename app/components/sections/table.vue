@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,6 +8,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
   Table,
   TableBody,
   TableCell,
@@ -14,67 +22,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDate, formatRupiah } from "~/lib/utils";
+import { usePdfHistory } from "@/composables/usePdfHistory";
+import { FileX } from "lucide-vue-next";
+import { formatDateTime, formatRupiah } from "~/lib/utils";
 
-const invoices = [
-  {
-    pageSize: "a4",
-    title: "Laporan Penjualan Q1 2026",
-    description:
-      "Rekapitulasi penjualan produk untuk kuartal pertama tahun 2026",
-    amount: "15750000",
-    date: new Date("2026-01-15").getTime(),
-  },
-  {
-    pageSize: "a4",
-    title: "Laporan Keuangan Bulanan",
-    description: "Laporan keuangan perusahaan bulan Januari 2026",
-    amount: "42500000",
-    date: new Date("2026-01-20").getTime(),
-  },
-  {
-    pageSize: "letter",
-    title: "Invoice Klien ABC Corp",
-    description: "Pembayaran jasa konsultasi dan pengembangan sistem",
-    amount: "28900000",
-    date: new Date("2026-01-25").getTime(),
-  },
-  {
-    pageSize: "a5",
-    title: "Laporan Inventory",
-    description: "Stok barang dan rekapitulasi pembelian bahan baku",
-    amount: "8750000",
-    date: new Date("2026-02-01").getTime(),
-  },
-  {
-    pageSize: "a4",
-    title: "Laporan Pengeluaran Operasional",
-    description: "Rincian biaya operasional kantor dan utilities",
-    amount: "12300000",
-    date: new Date("2026-02-03").getTime(),
-  },
-  {
-    pageSize: "a4",
-    title: "Tagihan Vendor XYZ",
-    description: "Pembayaran supplier untuk material proyek",
-    amount: "35600000",
-    date: new Date("2026-02-04").getTime(),
-  },
-  {
-    pageSize: "letter",
-    title: "Laporan Pajak",
-    description: "Laporan pajak bulanan dan PPh 21 karyawan",
-    amount: "6750000",
-    date: new Date("2026-02-05").getTime(),
-  },
-  {
-    pageSize: "a4",
-    title: "Reimbursement Tim Sales",
-    description: "Klaim perjalanan dinas dan entertainment klien",
-    amount: "4850000",
-    date: new Date("2026-02-06").getTime(),
-  },
-];
+const { history, removeHistory } = usePdfHistory();
 </script>
 
 <template>
@@ -99,9 +51,25 @@ const invoices = [
             </TableRow>
           </TableHeader>
           <TableBody>
+            <TableRow v-if="history.length === 0">
+              <TableCell colspan="6" class="h-60 text-center">
+                <Empty>
+                   <EmptyMedia class="bg-slate-100 p-4 rounded-full">
+                      <FileX class="size-8 text-slate-400" />
+                   </EmptyMedia>
+                   <EmptyHeader>
+                      <EmptyTitle>Belum ada data</EmptyTitle>
+                      <EmptyDescription>
+                         Anda belum membuat document PDF apapun. Silakan generate form di atas.
+                      </EmptyDescription>
+                   </EmptyHeader>
+                </Empty>
+              </TableCell>
+            </TableRow>
             <TableRow
-              v-for="({ title, pageSize, amount, date }, index) in invoices"
-              :key="index"
+              v-else
+              v-for="({ id, title, pageSize, amount, date }, index) in history"
+              :key="id"
               :index="index"
             >
               <TableCell class="border-r border-r-gray-300 font-medium">
@@ -109,13 +77,15 @@ const invoices = [
               </TableCell>
               <TableCell>{{ title }}</TableCell>
               <TableCell class="uppercase">{{ pageSize }}</TableCell>
-              <TableCell> Rp {{ formatRupiah(amount) }} </TableCell>
+              <TableCell> Rp {{ formatRupiah(String(amount)) }} </TableCell>
               <TableCell>
-                {{ formatDate(date) }}
+                {{ formatDateTime(date) }}
               </TableCell>
               <TableCell class="flex items-center justify-end gap-2">
                 <Button variant="link">Lihat</Button>
-                <Button variant="destructive">Download </Button>
+                <Button variant="destructive" @click="removeHistory(id)"
+                  >Hapus</Button
+                >
               </TableCell>
             </TableRow>
           </TableBody>
