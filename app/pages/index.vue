@@ -1,5 +1,4 @@
 <template>
-  <div>
-    <Button>Click me</Button>
-  </div>
+  <SectionsForm />
+  <SectionsTable />
 </template>
