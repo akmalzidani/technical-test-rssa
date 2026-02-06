@@ -23,10 +23,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { usePdfHistory } from "@/composables/usePdfHistory";
+import { usePdfGenerator } from "@/composables/usePdfGenerator";
 import { FileX } from "lucide-vue-next";
 import { formatDateTime, formatRupiah } from "~/lib/utils";
 
 const { history, removeHistory } = usePdfHistory();
+const { generatePdf } = usePdfGenerator();
 </script>
 
 <template>
@@ -40,8 +42,8 @@ const { history, removeHistory } = usePdfHistory();
       </CardHeader>
       <CardContent>
         <Table>
-          <TableHeader class="bg-gray-200">
-            <TableRow>
+          <TableHeader>
+            <TableRow class="bg-gray-200!">
               <TableHead class="w-6 border-r border-r-gray-300"> No </TableHead>
               <TableHead>Judul Laporan</TableHead>
               <TableHead>Ukuran Halaman</TableHead>
@@ -68,7 +70,7 @@ const { history, removeHistory } = usePdfHistory();
             </TableRow>
             <TableRow
               v-else
-              v-for="({ id, title, pageSize, amount, date }, index) in history"
+              v-for="({ id, title, description, pageSize, amount, date }, index) in history"
               :key="id"
               :index="index"
             >
@@ -82,7 +84,9 @@ const { history, removeHistory } = usePdfHistory();
                 {{ formatDateTime(date) }}
               </TableCell>
               <TableCell class="flex items-center justify-end gap-2">
-                <Button variant="success">📄Unduh</Button>
+                <Button variant="success" @click="generatePdf({ id, title, description, pageSize, amount, date })"
+                  >📄Unduh</Button
+                >
                 <Button variant="destructive" @click="removeHistory(id)"
                   >Hapus</Button
                 >
