@@ -22,13 +22,41 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { usePdfHistory } from "@/composables/usePdfHistory";
 import { usePdfGenerator } from "@/composables/usePdfGenerator";
 import { FileX } from "lucide-vue-next";
 import { formatDateTime, formatRupiah } from "~/lib/utils";
+import { toast } from "vue-sonner";
 
 const { history, removeHistory } = usePdfHistory();
 const { generatePdf } = usePdfGenerator();
+
+const deleteId = ref<string | null>(null);
+const showDeleteDialog = ref(false);
+
+const openDeleteConfirm = (id: string) => {
+  deleteId.value = id;
+  showDeleteDialog.value = true;
+};
+
+const confirmDelete = () => {
+  if (deleteId.value) {
+    removeHistory(deleteId.value);
+    toast.success("Laporan berhasil dihapus");
+    deleteId.value = null;
+  }
+  showDeleteDialog.value = false;
+};
 </script>
 
 <template>
@@ -87,7 +115,7 @@ const { generatePdf } = usePdfGenerator();
                 <Button variant="success" @click="generatePdf({ id, title, description, pageSize, amount, date })"
                   >📄Unduh</Button
                 >
-                <Button variant="destructive" @click="removeHistory(id)"
+                <Button variant="destructive" @click="openDeleteConfirm(id)"
                   >Hapus</Button
                 >
               </TableCell>
@@ -96,5 +124,22 @@ const { generatePdf } = usePdfGenerator();
         </Table>
       </CardContent>
     </Card>
+
+    <AlertDialog :open="showDeleteDialog" @update:open="showDeleteDialog = $event">
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Hapus Laporan?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Apakah Anda yakin ingin menghapus laporan ini? Tindakan ini tidak dapat dibatalkan.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel @click="deleteId = null">Batal</AlertDialogCancel>
+          <AlertDialogAction @click="confirmDelete" class="bg-destructive cursor-pointer text-white hover:bg-destructive/90">
+            Hapus
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </section>
 </template>
