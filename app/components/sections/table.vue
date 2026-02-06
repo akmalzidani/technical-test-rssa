@@ -4,20 +4,18 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { toast } from "vue-sonner";
 
 const invoices = [
   {
@@ -78,9 +76,9 @@ const invoices = [
         <Table>
           <TableHeader class="bg-gray-200">
             <TableRow>
-              <TableHead class="w-6"> No </TableHead>
-              <TableHead>Judul</TableHead>
-              <TableHead>Page Size</TableHead>
+              <TableHead class="w-6 border-r border-r-gray-300"> No </TableHead>
+              <TableHead>Judul Laporan</TableHead>
+              <TableHead>Ukuran Halaman</TableHead>
               <TableHead> Nominal </TableHead>
               <TableHead> Tanggal </TableHead>
               <TableHead> Aksi </TableHead>
@@ -91,7 +89,10 @@ const invoices = [
               v-for="(invoice, index) in invoices"
               :key="invoice.invoice"
             >
-              <TableCell class="font-medium" :isEven="index % 2 === 0">
+              <TableCell
+                class="border-r border-r-gray-300 font-medium"
+                :isEven="index % 2 === 0"
+              >
                 {{ index + 1 }}
               </TableCell>
               <TableCell :isEven="index % 2 === 0">{{
