@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Loader2 } from "lucide-vue-next";
+import { useForm } from "vee-validate";
+import { toast } from "vue-sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,7 +12,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -19,24 +28,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import CurrencyInput from "@/components/ui/currency-input/CurrencyInput.vue";
+import { pdfFormSchema } from "@/lib/schemas/pdf-form";
 
 const PAGE_SIZES = [
   { label: "A4", value: "a4" },
   { label: "A5", value: "a5" },
   { label: "Letter", value: "letter" },
-];
+] as const;
 
-const formState = reactive({
-  pageSize: "a4",
-  title: "",
-  description: "",
-  amount: "",
-  date: Date.now(),
+const { handleSubmit, resetForm, isSubmitting, values } = useForm({
+  validationSchema: pdfFormSchema,
+  initialValues: {
+    pageSize: "a4" as const,
+    title: "",
+    description: "",
+    amount: 0,
+  },
+});
+
+const onSubmit = handleSubmit(async (formValues) => {
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    console.log("Form submitted:", formValues);
+    toast.success("PDF berhasil di-generate");
+    resetForm();
+  } catch {
+    toast.error("Gagal generate PDF. Silakan coba lagi.");
+  }
 });
 </script>
 
@@ -50,63 +69,93 @@ const formState = reactive({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
-          <div class="grid w-full grid-cols-12 items-center gap-4">
-            <div
-              class="col-span-5 flex flex-col space-y-1.5 md:col-span-3 lg:col-span-2"
-            >
-              <Label for="pageSize">Ukuran halaman</Label>
-              <Select v-model="formState.pageSize">
-                <SelectTrigger class="relative top-0.5 w-full">
-                  <SelectValue placeholder="Pilih ukuran halaman" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      v-for="value in PAGE_SIZES"
-                      :value="value.value"
-                    >
-                      {{ value.label }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div
-              class="col-span-7 flex flex-col space-y-1.5 md:col-span-9 lg:col-span-10"
-            >
-              <Label for="title">Judul Laporan</Label>
-              <Input
-                id="title"
-                type="text"
-                placeholder="Masukkan judul laporan..."
-                v-model="formState.title"
-              />
-            </div>
-            <div class="col-span-full flex flex-col space-y-1.5">
-              <Label for="description">Deskripsi / Isi Laporan</Label>
-              <Textarea
-                id="description"
-                placeholder="Masukkan isi laporan..."
-                v-model="formState.description"
-              />
-            </div>
-            <div
-              class="col-span-7 flex flex-col space-y-1.5 md:col-span-5 lg:col-span-3"
-            >
-              <Label for="amount">Nominal (Rp)</Label>
-              <InputGroup>
-                <InputGroupAddon>
-                  <InputGroupText>Rp</InputGroupText>
-                </InputGroupAddon>
-                <InputGroupInput placeholder="0" v-model="formState.amount" />
-              </InputGroup>
-            </div>
+        <form @submit="onSubmit">
+          <div class="grid w-full grid-cols-12 items-start gap-4">
+            <FormField v-slot="{ componentField }" name="pageSize">
+              <FormItem
+                class="col-span-5 flex flex-col space-y-1.5 md:col-span-3 lg:col-span-2"
+              >
+                <FormLabel>Ukuran halaman</FormLabel>
+                <Select v-bind="componentField">
+                  <FormControl>
+                    <SelectTrigger class="relative top-0.5 w-full">
+                      <SelectValue placeholder="Pilih ukuran halaman" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        v-for="size in PAGE_SIZES"
+                        :key="size.value"
+                        :value="size.value"
+                      >
+                        {{ size.label }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ componentField }" name="title">
+              <FormItem
+                class="col-span-7 flex flex-col space-y-1.5 md:col-span-9 lg:col-span-10"
+              >
+                <FormLabel>Judul Laporan</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Masukkan judul laporan..."
+                    v-bind="componentField"
+                    :maxlength="100"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ componentField }" name="description">
+              <FormItem class="col-span-full flex flex-col space-y-1.5">
+                <FormLabel>Deskripsi / Isi Laporan</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Masukkan isi laporan..."
+                    v-bind="componentField"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ value, handleChange }" name="amount">
+              <FormItem
+                class="col-span-7 flex flex-col space-y-1.5 md:col-span-5 lg:col-span-3"
+              >
+                <FormLabel>Nominal (Rp)</FormLabel>
+                <FormControl>
+                  <CurrencyInput
+                    :model-value="value"
+                    @update:model-value="handleChange"
+                    placeholder="0"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
         </form>
       </CardContent>
       <CardFooter class="flex justify-end">
-        <Button class="px-8 py-6" variant="destructive">Generate PDF 📄</Button>
+        <Button
+          class="px-8 py-6"
+          variant="destructive"
+          :disabled="isSubmitting"
+          @click="onSubmit"
+        >
+          <Loader2 v-if="isSubmitting" class="mr-2 h-4 w-4 animate-spin" />
+          {{ isSubmitting ? "Generating..." : "Generate PDF 📄" }}
+        </Button>
       </CardFooter>
     </Card>
   </section>
